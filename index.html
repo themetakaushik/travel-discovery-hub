@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover beautiful destinations, travel guides and unforgettable experiences around the world.">
+  <title>Travel Discovery Hub | Explore the World</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8faf9;
+      color: #24332e;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #123c35;
+      color: white;
+      padding: 20px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+    }
+
+    .hero {
+      min-height: 430px;
+      padding: 90px 8%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.1)),
+        url("https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1800&q=85")
+        center/cover;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 58px);
+      max-width: 650px;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      max-width: 540px;
+      font-size: 18px;
+    }
+
+    .section {
+      padding: 55px 7%;
+    }
+
+    .section h2 {
+      font-size: 29px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #687b74;
+      margin-bottom: 25px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .filters button {
+      border: 1px solid #cbd8d2;
+      padding: 10px 18px;
+      border-radius: 25px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .filters button.active,
+    .filters button:hover {
+      background: #176b55;
+      color: white;
+    }
+
+    .search {
+      width: 100%;
+      max-width: 450px;
+      padding: 13px;
+      border: 1px solid #ccd8d2;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 13px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,.06);
+      transition: transform .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .tag {
+      color: #167456;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .card h3 {
+      margin: 8px 0;
+    }
+
+    .card p {
+      color: #65766e;
+      font-size: 14px;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 14px;
+      color: #167456;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .about {
+      background: #eaf2ed;
+      padding: 45px 7%;
+      text-align: center;
+    }
+
+    footer {
+      background: #123c35;
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-size: 14px;
+    }
+
+    @media(max-width: 600px) {
+      header {
+        flex-direction: column;
+      }
+
+      nav a {
+        margin: 0 8px;
+      }
+
+      .hero {
+        min-height: 350px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🌍 Travel Discovery Hub</div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#destinations">Destinations</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <h1>Discover the World, One Journey at a Time</h1>
+  <p>
+    Explore inspiring destinations, discover hidden gems
+    and find travel guides for your next adventure.
+  </p>
+</section>
+
+<section class="section" id="destinations">
+  <h2>Explore Destinations</h2>
+  <p class="subtitle">
+    Discover travel inspiration from around the world.
+  </p>
+
+  <input
+    class="search"
+    id="search"
+    type="search"
+    placeholder="Search destinations or travel guides..."
+    aria-label="Search destinations"
+  >
+
+  <div class="filters">
+    <button class="active" data-filter="All">All</button>
+    <button data-filter="Asia">Asia</button>
+    <button data-filter="Europe">Europe</button>
+    <button data-filter="Nature">Nature</button>
+  </div>
+
+  <div class="grid" id="destinationGrid">
+
+    <article class="card" data-category="Asia">
+      <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80" alt="Traditional Kyoto street">
+      <div class="card-content">
+        <span class="tag">Asia · Japan</span>
+        <h3>Explore Kyoto, Japan</h3>
+        <p>Discover traditional streets, temples, gardens and Japanese culture.</p>
+        <a href="https://www.japan.travel/en/destinations/kansai/kyoto/" target="_blank" rel="noopener">Explore guide →</a>
+      </div>
+    </article>
+
+    <article class="card" data-category="Europe">
+      <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80" alt="Italian coastal villages">
+      <div class="card-content">
+        <span class="tag">Europe · Italy</span>
+        <h3>Discover Italy</h3>
+        <p>Explore scenic coastal villages, beautiful architecture and local food.</p>
+        <a href="https://www.italia.it/en" target="_blank" rel="noopener">Explore guide →</a>
+      </div>
+    </article>
+
+    <article class="card" data-category="Nature">
+      <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80" alt="Beautiful mountain lake">
+      <div class="card-content">
+        <span class="tag">Nature · Mountains</span>
+        <h3>Mountain Escapes</h3>
+        <p>Find inspiration for mountain adventures and peaceful lake holidays.</p>
+        <a href="https://www.nationalgeographic.com/travel" target="_blank" rel="noopener">Explore guide →</a>
+      </div>
+    </article>
+
+    <article class="card" data-category="Asia">
+      <img src="https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?auto=format&fit=crop&w=800&q=80" alt="Tropical destination">
+      <div class="card-content">
+        <span class="tag">Asia · Southeast Asia</span>
+        <h3>Tropical Adventures</h3>
+        <p>Discover tropical scenery, beaches and unforgettable experiences.</p>
+        <a href="https://www.visitsoutheastasia.travel/" target="_blank" rel="noopener">Explore guide →</a>
+      </div>
+    </article>
+
+  </div>
+
+  <p id="emptyMessage" hidden>No matching destinations found. Try another search.</p>
+</section>
+
+<section class="about" id="about">
+  <h2>About Travel Discovery Hub</h2>
+  <p>
+    Our mission is to bring useful travel inspiration and
+    destination information together in one place.
+    New travel discoveries will be added regularly.
+  </p>
+</section>
+
+<footer>
+  <p>© 2026 Travel Discovery Hub | Explore More, Travel Better 🌍</p>
+</footer>
+
+<script>
+  const search = document.getElementById("search");
+  const cards = [...document.querySelectorAll(".card")];
+  const buttons = [...document.querySelectorAll(".filters button")];
+  const emptyMessage = document.getElementById("emptyMessage");
+
+  let activeCategory = "All";
+
+  function filterCards() {
+    const term = search.value.toLowerCase();
+    let visible = 0;
+
+    cards.forEach(card => {
+      const matchesCategory =
+        activeCategory === "All" ||
+        card.dataset.category === activeCategory;
+
+      const matchesSearch =
+        card.innerText.toLowerCase().includes(term);
+
+      const show = matchesCategory && matchesSearch;
+
+      card.hidden = !show;
+      if (show) visible++;
+    });
+
+    emptyMessage.hidden = visible !== 0;
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.filter;
+
+      buttons.forEach(item =>
+        item.classList.toggle("active", item === button)
+      );
+
+      filterCards();
+    });
+  });
+
+  search.addEventListener("input", filterCards);
+</script>
+
+</body>
+</html>
