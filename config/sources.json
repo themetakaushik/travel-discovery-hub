@@ -1,0 +1,12 @@
+
+{
+  "sources": [
+    {
+      "name": "The Guardian Travel",
+      "type": "rss",
+      "url": "https://www.theguardian.com/uk/travel/rss",
+      "category": "Travel destinations and tourism guides",
+      "enabled": true
+    }
+  ]
+}
