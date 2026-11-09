@@ -215,73 +215,46 @@
   </p>
 </section>
 
+
 <section class="section" id="destinations">
-  <h2>Explore Destinations</h2>
+
+  <h2>Latest Travel Discoveries</h2>
+
   <p class="subtitle">
-    Discover travel inspiration from around the world.
+    Fresh destination inspiration collected from travel publishers.
+  </p>
+
+  <p id="lastUpdated" class="subtitle">
+    Loading travel information...
   </p>
 
   <input
     class="search"
     id="search"
     type="search"
-    placeholder="Search destinations or travel guides..."
-    aria-label="Search destinations"
+    placeholder="Search travel articles..."
+    aria-label="Search travel articles"
   >
 
-  <div class="filters">
+  <div class="filters" id="filters">
     <button class="active" data-filter="All">All</button>
-    <button data-filter="Asia">Asia</button>
-    <button data-filter="Europe">Europe</button>
-    <button data-filter="Nature">Nature</button>
   </div>
 
-  <div class="grid" id="destinationGrid">
-
-    <article class="card" data-category="Asia">
-      <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80" alt="Traditional Kyoto street">
-      <div class="card-content">
-        <span class="tag">Asia · Japan</span>
-        <h3>Explore Kyoto, Japan</h3>
-        <p>Discover traditional streets, temples, gardens and Japanese culture.</p>
-        <a href="https://www.japan.travel/en/destinations/kansai/kyoto/" target="_blank" rel="noopener">Explore guide →</a>
-      </div>
-    </article>
-
-    <article class="card" data-category="Europe">
-      <img src="https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=800&q=80" alt="Italian coastal villages">
-      <div class="card-content">
-        <span class="tag">Europe · Italy</span>
-        <h3>Discover Italy</h3>
-        <p>Explore scenic coastal villages, beautiful architecture and local food.</p>
-        <a href="https://www.italia.it/en" target="_blank" rel="noopener">Explore guide →</a>
-      </div>
-    </article>
-
-    <article class="card" data-category="Nature">
-      <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80" alt="Beautiful mountain lake">
-      <div class="card-content">
-        <span class="tag">Nature · Mountains</span>
-        <h3>Mountain Escapes</h3>
-        <p>Find inspiration for mountain adventures and peaceful lake holidays.</p>
-        <a href="https://www.nationalgeographic.com/travel" target="_blank" rel="noopener">Explore guide →</a>
-      </div>
-    </article>
-
-    <article class="card" data-category="Asia">
-      <img src="https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?auto=format&fit=crop&w=800&q=80" alt="Tropical destination">
-      <div class="card-content">
-        <span class="tag">Asia · Southeast Asia</span>
-        <h3>Tropical Adventures</h3>
-        <p>Discover tropical scenery, beaches and unforgettable experiences.</p>
-        <a href="https://www.visitsoutheastasia.travel/" target="_blank" rel="noopener">Explore guide →</a>
-      </div>
-    </article>
-
+  <div class="grid" id="articleGrid">
+    <p>Loading travel discoveries...</p>
   </div>
 
-  <p id="emptyMessage" hidden>No matching destinations found. Try another search.</p>
+  <p id="emptyMessage" hidden>
+    No matching articles found.
+  </p>
+
+  <p id="loadError" hidden>
+    Travel information could not be loaded.
+    Please try again later.
+  </p>
+
 </section>
+
 
 <section class="about" id="about">
   <h2>About Travel Discovery Hub</h2>
@@ -297,48 +270,182 @@
 </footer>
 
 <script>
-  const search = document.getElementById("search");
-  const cards = [...document.querySelectorAll(".card")];
-  const buttons = [...document.querySelectorAll(".filters button")];
-  const emptyMessage = document.getElementById("emptyMessage");
+const search = document.getElementById("search");
+const articleGrid = document.getElementById("articleGrid");
+const filters = document.getElementById("filters");
+const emptyMessage = document.getElementById("emptyMessage");
+const loadError = document.getElementById("loadError");
+const lastUpdated = document.getElementById("lastUpdated");
 
-  let activeCategory = "All";
+let articles = [];
+let activeCategory = "All";
 
-  function filterCards() {
-    const term = search.value.toLowerCase();
-    let visible = 0;
+function createElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
 
-    cards.forEach(card => {
-      const matchesCategory =
-        activeCategory === "All" ||
-        card.dataset.category === activeCategory;
-
-      const matchesSearch =
-        card.innerText.toLowerCase().includes(term);
-
-      const show = matchesCategory && matchesSearch;
-
-      card.hidden = !show;
-      if (show) visible++;
-    });
-
-    emptyMessage.hidden = visible !== 0;
+function validUrl(value) {
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol)
+      ? url.href
+      : null;
+  } catch {
+    return null;
   }
+}
 
-  buttons.forEach(button => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.filter;
+function displayArticles() {
+  const term = search.value.trim().toLowerCase();
 
-      buttons.forEach(item =>
-        item.classList.toggle("active", item === button)
-      );
+  const filtered = articles.filter(article => {
+    const category = article.category || "Travel Guide";
 
-      filterCards();
-    });
+    const matchesCategory =
+      activeCategory === "All" ||
+      category === activeCategory;
+
+    const searchable = [
+      article.title,
+      article.summary,
+      article.destination,
+      article.source,
+      article.category
+    ].join(" ").toLowerCase();
+
+    return matchesCategory && searchable.includes(term);
   });
 
-  search.addEventListener("input", filterCards);
-</script>
+  articleGrid.replaceChildren();
 
+  filtered.forEach(article => {
+    const card = createElement("article", "card");
+    const content = createElement("div", "card-content");
+
+    const category = createElement(
+      "span",
+      "tag",
+      article.category || "Travel Guide"
+    );
+
+    const title = createElement(
+      "h3",
+      "",
+      article.title || "Untitled article"
+    );
+
+    const summary = createElement(
+      "p",
+      "",
+      article.summary || "Visit the original source for more details."
+    );
+
+    const source = createElement(
+      "p",
+      "",
+      "Source: " + (article.source || "Travel publisher")
+    );
+
+    const date = createElement(
+      "p",
+      "",
+      "Published: " + (article.published_date || "Date unavailable")
+    );
+
+    content.append(category, title, summary, source, date);
+
+    const url = validUrl(article.source_url);
+
+    if (url) {
+      const link = createElement("a", "", "Read original article →");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      content.appendChild(link);
+    }
+
+    card.appendChild(content);
+    articleGrid.appendChild(card);
+  });
+
+  emptyMessage.hidden = filtered.length !== 0;
+}
+
+function createFilters() {
+  const categories = [
+    "All",
+    ...new Set(
+      articles
+        .map(article => article.category)
+        .filter(Boolean)
+    )
+  ];
+
+  filters.replaceChildren();
+
+  categories.forEach(category => {
+    const button = createElement("button", "", category);
+
+    if (category === activeCategory) {
+      button.classList.add("active");
+    }
+
+    button.addEventListener("click", () => {
+      activeCategory = category;
+
+      filters.querySelectorAll("button").forEach(item => {
+        item.classList.toggle("active", item === button);
+      });
+
+      displayArticles();
+    });
+
+    filters.appendChild(button);
+  });
+}
+
+async function loadArticles() {
+  try {
+    const response = await fetch("data/articles.json");
+
+    if (!response.ok) {
+      throw new Error("Could not load article database");
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid article database format");
+    }
+
+    articles = data;
+
+    createFilters();
+    displayArticles();
+
+    const dates = articles
+      .map(article => article.collected_date)
+      .filter(Boolean)
+      .sort();
+
+    lastUpdated.textContent = dates.length
+      ? "Latest collection date: " + dates[dates.length - 1]
+      : "No travel articles collected yet.";
+
+  } catch (error) {
+    console.error("Travel content error:", error);
+    articleGrid.replaceChildren();
+    loadError.hidden = false;
+    lastUpdated.textContent = "Travel content is currently unavailable.";
+  }
+}
+
+search.addEventListener("input", displayArticles);
+
+loadArticles();
+</script>
 </body>
 </html>
