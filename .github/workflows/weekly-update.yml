@@ -1,0 +1,46 @@
+
+name: Weekly Travel Content Update
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '17 9 * * 1'
+      timezone: 'Asia/Kolkata'
+
+permissions:
+  contents: write
+
+jobs:
+  collect-travel-content:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
+
+      - name: Run travel collector
+        run: python scripts/collector.py
+
+      - name: Save updated articles
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/articles.json
+
+          if git diff --cached --quiet; then
+            echo "No new travel articles to save."
+          else
+            git commit -m "Update collected travel articles"
+            git push
+          fi
